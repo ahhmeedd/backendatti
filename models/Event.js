@@ -8,10 +8,7 @@ const EventSchema = new mongoose.Schema({
   endDate: { type: Date, required: true },
   maxParticipants: { type: Number, required: true },
   poster: { type: String, required: true }, // Store image path/URL
-  participants: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Adherent'
-  }]
-});
+  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Adherent'}]
+}, { timestamps: true });
 
 module.exports = mongoose.model('Event', EventSchema);
