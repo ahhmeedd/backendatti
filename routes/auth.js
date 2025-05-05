@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Adherent = require('../models/Adherent');
 const Admin = require('../models/Admin');
@@ -33,16 +33,24 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
+    console.log('Trying to login with:', email, password);
     let user = await Adherent.findOne({ email });
     let isAdmin = false;
     if (!user) {
       user = await Admin.findOne({ email });
       isAdmin = true;
     }
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
-
+    if (!user){
+      console.log('No user found with that email');
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+    console.log('Password match:', isMatch);
+    if (!isMatch){
+      console.log('Stored password:', user.password);
+      console.log('Entered password:', password);
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
 
     const payload = {
       id: user._id,
